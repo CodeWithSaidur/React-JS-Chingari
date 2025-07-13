@@ -1,0 +1,28 @@
+Prerequisite 
+    HTML CSS JS(mastry) ES6 
+
+Why Should i learn React
+    Cpmplex frontend
+ 
+JS Variable -> Update -> DOM
+
+Don't Learn React Before You Understand These Core JavaScript Concepts
+    1. How JavaScript Internally Works
+    2. How JavaScript Executes (Single-Threaded)
+    3. Execution Context / Global Context
+    4. HHigher Order Functions (HOFs)
+    5. DOM Tree    
+
+-> Topics to learn
+    JSX
+    Component reusability
+    Props and Hooks
+
+-> Additional with React
+    Routing 
+    Statemanagement 
+    BAAS Apps 
+
+-> After React
+    Next.js, Remix, Gatsjs 
+
