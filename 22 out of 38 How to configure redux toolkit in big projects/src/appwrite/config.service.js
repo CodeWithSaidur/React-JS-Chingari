@@ -1,3 +1,4 @@
+// config.service.js
 import config from '../config/config.js'
 import { Client, Databases, Storage, Query, ID } from 'appwrite'
 

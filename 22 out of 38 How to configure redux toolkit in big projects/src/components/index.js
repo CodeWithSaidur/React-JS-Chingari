@@ -1,3 +1,4 @@
+// components/index.js
 import { Header } from './Header/Header.jsx'
 import { Footer } from './Footer/Footer.jsx'
 

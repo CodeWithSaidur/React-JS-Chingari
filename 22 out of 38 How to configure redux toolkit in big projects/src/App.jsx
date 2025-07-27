@@ -1,5 +1,6 @@
+// App.jsx
 import './App.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { authService } from './appwrite/auth.service.js'
 import { login, logout } from './store/authSlice.js'
