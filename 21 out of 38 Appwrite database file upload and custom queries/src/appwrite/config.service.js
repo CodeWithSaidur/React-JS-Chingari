@@ -1,13 +1,12 @@
 import config from '../config/config.js'
 import { Client, Databases, Storage, Query, ID } from 'appwrite'
 
-class Service {
-  #dbId = config.appwriteDatabaseId
-  #collectionId = config.appwriteCollectionId
-  #bucketId = config.appwriteBucketId
-
+export class Service {
+  client = new Client()
+  databases
+  storage
   constructor() {
-    this.client = new Client()
+    this.client
       .setEndpoint(config.appwriteUrl)
       .setProject(config.appwriteProjectId)
 
@@ -15,102 +14,125 @@ class Service {
     this.storage = new Storage(this.client)
   }
 
-  async createPost(post) {
+  //   create a new post
+  async createPost({
+    title,
+    slug,
+    content,
+    featuredImage,
+    status,
+    userId
+  }) {
     try {
       return await this.databases.createDocument(
-        this.#dbId,
-        this.#collectionId,
-        post.slug,
-        post
+        config.appwriteDatabaseId,
+        config.appwriteCollectionId,
+        slug,
+        {
+          title,
+          slug,
+          content,
+          featuredImage,
+          status
+        }
       )
-    } catch (err) {
-      console.error('❌ [Create Post Error]:', err)
-      throw err
+    } catch (error) {
+      console.error('Error creating post:', error)
+      throw error
     }
   }
-
-  async updatePost(slug, post) {
+  // update a post
+  async updatePost(slug, { title, content, featuredImage, status }) {
     try {
       return await this.databases.updateDocument(
-        this.#dbId,
-        this.#collectionId,
+        config.appwriteDatabaseId,
+        config.appwriteCollectionId,
         slug,
-        post
+        {
+          title,
+          content,
+          featuredImage,
+          status
+        }
       )
-    } catch (err) {
-      console.error('❌ [Update Post Error]:', err)
-      throw err
+    } catch (error) {
+      console.error('Error updating post:', error)
+      throw error
     }
   }
-
+  //   delete a post
   async deletePost(slug) {
     try {
       await this.databases.deleteDocument(
-        this.#dbId,
-        this.#collectionId,
+        config.appwriteDatabaseId,
+        config.appwriteCollectionId,
         slug
       )
       return true
-    } catch (err) {
-      console.error('❌ [Delete Post Error]:', err)
+    } catch (error) {
+      console.error('Error deleting post:', error)
       return false
     }
   }
-
+  //  get a post by slug
   async getPostBySlug(slug) {
     try {
       return await this.databases.getDocument(
-        this.#dbId,
-        this.#collectionId,
+        config.appwriteDatabaseId,
+        config.appwriteCollectionId,
         slug
       )
-    } catch (err) {
-      console.error('❌ [Get Post Error]:', err)
-      return null
+    } catch (error) {
+      console.error('Error fetching post by slug:', error)
+      return false
     }
   }
-
+  // get posts with query
   async getPosts(query = [Query.equal('status', 'active')]) {
     try {
-      const res = await this.databases.listDocuments(
-        this.#dbId,
-        this.#collectionId,
+      return await this.databases.listDocuments(
+        config.appwriteDatabaseId,
+        config.appwriteCollectionId,
         query
       )
-      return res?.documents || []
-    } catch (err) {
-      console.error('❌ [Get Posts Error]:', err)
-      return []
-    }
-  }
-
-  async uploadFile(file) {
-    try {
-      return await this.storage.createFile(
-        this.#bucketId,
-        ID.unique(),
-        file
-      )
-    } catch (err) {
-      console.error('❌ [Upload File Error]:', err)
-      return null
-    }
-  }
-
-  async deleteFile(fileId) {
-    try {
-      await this.storage.deleteFile(this.#bucketId, fileId)
-      return true
-    } catch (err) {
-      console.error('❌ [Delete File Error]:', err)
+    } catch (error) {
+      console.error('Error fetching posts:', error)
       return false
     }
   }
 
-  getFilePreview(fileId) {
-    return this.storage.getFilePreview(this.#bucketId, fileId)
+  // upload a file
+  async uploadFile(file) {
+    try {
+      return await this.storage.createFile(
+        config.appwriteBucketId,
+        ID.unique(),
+        file
+      )
+    } catch (error) {
+      console.error('Error uploading file:', error)
+      return false
+    }
+  }
+  // delete a file
+  async deleteFile(fileId) {
+    try {
+      await this.storage.deleteFile(config.appwriteBucketId, fileId)
+      return true
+    } catch (error) {
+      console.error('Error deleting file:', error)
+      return false
+    }
+  }
+  // get file preview
+  async getFilePreview(fileId) {
+    return this.storage.getFilePreview(
+      config.appwriteBucketId,
+      fileId,
+    )
   }
 }
 
 const service = new Service()
+
 export default service
